@@ -1,7 +1,14 @@
 import { useState } from "react";
+import axios from 'axios';
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
+import React from "react";
+import { useLocation } from 'react-router-dom'
+import { Link } from "react-router-dom";
+
+import "./signup.css";
 
 const SignUp = () => {
+
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -19,7 +26,7 @@ const SignUp = () => {
         isSeller: false,
         isAdmin: false,
         isAdvertiser: false,
-        phone: "",
+
     });
 
     const handleInputChange = (e) => {
@@ -43,13 +50,19 @@ const SignUp = () => {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData); // or send data to backend API
+        try {
+            const response = await axios.post('http://localhost:5000/signup', formData);
+            console.log(response.data);
+        } catch (err) {
+            console.error(err);
+        }
     };
 
     return (
         <Form onSubmit={handleSubmit}>
+            <h2 className="signup-heading">SignUp</h2>
             <FormGroup>
                 <Label for="username">Username:</Label>
                 <Input
@@ -171,17 +184,7 @@ const SignUp = () => {
                     required
                 />
             </FormGroup>
-            <FormGroup>
-                <Label for="phone">Phone:</Label>
-                <Input
-                    type="tel"
-                    name="phone"
-                    id="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                />
-            </FormGroup>
+
             <FormGroup check>
                 <Label check>
                     <Input

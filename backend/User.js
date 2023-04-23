@@ -45,10 +45,8 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
     },
-    phone: {
-        type: String,
-    },
-    timestamps: true,
+
+
 });
 
 userSchema.plugin(passportLocalMongoose);

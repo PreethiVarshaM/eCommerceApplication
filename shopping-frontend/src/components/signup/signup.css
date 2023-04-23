@@ -1,12 +1,23 @@
+.signup-heading{
+  font-size: 2.5rem;
+  padding-bottom: 1rem;
+}
+
 /* For screens smaller than 768px */
 @media (max-width: 767px) {
+
+    form{
+      padding: 10%;
+    }
     .form-group {
       margin-bottom: 15px;
+      
     }
   
     .form-group label {
       display: block;
       margin-bottom: 5px;
+      
     }
   
     .form-group input[type="checkbox"] {
@@ -20,6 +31,9 @@
   
   /* For screens larger than 768px */
   @media (min-width: 768px) {
+    form{
+      padding: 10%;
+    }
     .form-group {
       display: inline-block;
       margin-right: 20px;

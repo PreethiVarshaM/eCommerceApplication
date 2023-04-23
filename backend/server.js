@@ -45,17 +45,40 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // TODO: Create a route for these
-app.post('/signup', (req, res) => {
-    register(req.body, req.body.password, (err, user) => {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err);
-        } else {
-            passport.authenticate('local')(req, res, () => {
-                res.send('Signed up');
-            });
+app.post('/signup', async (req, res) => {
+    try {
+        const existingUser = await User.findOne({ username: req.body.username });
+
+        if (existingUser) {
+            return res.status(409).json({ error: 'User already exists' });
         }
-    });
+        const newUser = new User({
+            username: req.body.username,
+            password: req.body.password,
+            name: req.body.name,
+            phone_number: req.body.phone_number,
+            email: req.body.email,
+            address: {
+                dno: req.body.address.dno,
+                street: req.body.address.street,
+                pinCode: req.body.address.pinCode,
+                city: req.body.address.city,
+                State: req.body.address.State,
+                Country: req.body.address.Country
+            },
+            isSeller: req.body.isSeller,
+            isAdmin: req.body.isAdmin,
+            isAdvertiser: req.body.isAdvertiser,
+
+        });
+
+        await newUser.save();
+        console.log("newuser")
+        res.status(201).json(newUser);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
 
 app.get('/secret', ensureLoggedIn('/'), (req, res) => {
@@ -64,7 +87,8 @@ app.get('/secret', ensureLoggedIn('/'), (req, res) => {
 
 app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }),
     (req, res) => {
-        res.redirect('/home');
+        //res.redirect('/home');
+        console.log("Login")
     }
 );
 

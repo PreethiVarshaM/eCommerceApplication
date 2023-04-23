@@ -3,10 +3,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom'
+import { Link } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 import "./login.css";
 
 function Login() {
+    const location = useLocation()
+    console.log(location);
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [userType, setUserType] = useState("Customer");
@@ -23,10 +28,10 @@ function Login() {
         setUserType(event.target.value);
     };
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('/login', { username, password, userType });
+            const response = axios.post('http://localhost:5000/login', { username, password, userType });
             console.log(response.data);
             // Add logic to redirect user to Home page upon successful login
         } catch (error) {
@@ -41,7 +46,8 @@ function Login() {
     return (
         <div className="login-container container">
             <form onSubmit={handleSubmit} className="login-form col-md-6 col-lg-4">
-                <h2 className="login-h2 mb-4">Login</h2>
+
+                <h3 className="login-h2 mb-4">Login</h3>
                 <div className="mb-3">
                     <label htmlFor="usernameInput" className="form-label">Username:</label>
                     <input type="text" className="login-input form-control" id="usernameInput" value={username} onChange={handleUsernameChange} />
@@ -62,7 +68,7 @@ function Login() {
                 <button type="submit" className="login-button btn mb-3">Login</button>
                 <p>Don't have an account? <a href="/signup">Sign up</a></p>
             </form>
-        </div>
+        </div >
     );
 }
 
