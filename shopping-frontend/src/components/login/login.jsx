@@ -2,19 +2,21 @@
 
 import React, { useState } from "react";
 import axios from "axios";
+//import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
-import { useLocation } from 'react-router-dom'
-import { Link } from "react-router-dom";
+//import { useLocation } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css';
 import "./login.css";
 
 function Login() {
-    const location = useLocation()
-    console.log(location);
+    //const location = useLocation()
+    //console.log(location);
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [userType, setUserType] = useState("Customer");
+    const navigate = useNavigate();
 
     const handleUsernameChange = (event) => {
         setUsername(event.target.value);
@@ -28,11 +30,15 @@ function Login() {
         setUserType(event.target.value);
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+        //console.log(username, password, userType)
         try {
             const response = axios.post('http://localhost:5000/login', { username, password, userType });
-            console.log(response.data);
+            console.log((await response).data.success._id);
+            // <Navigate to="/home" />
+            const url = "/customer/" + (await response).data.success._id + "/home"
+            navigate(url);
             // Add logic to redirect user to Home page upon successful login
         } catch (error) {
             console.error(error);

@@ -2,8 +2,6 @@ import { useState } from "react";
 import axios from 'axios';
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 import React from "react";
-import { useLocation } from 'react-router-dom'
-import { Link } from "react-router-dom";
 
 import "./signup.css";
 
@@ -54,7 +52,7 @@ const SignUp = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:5000/signup', formData);
-            console.log(response.data);
+            console.log(await response.json());
         } catch (err) {
             console.error(err);
         }

@@ -46,10 +46,12 @@ passport.deserializeUser(User.deserializeUser());
 
 // TODO: Create a route for these
 app.post('/signup', async (req, res) => {
+    //console.log("signup")
     try {
         const existingUser = await User.findOne({ username: req.body.username });
 
         if (existingUser) {
+            // console.log("user already exists")
             return res.status(409).json({ error: 'User already exists' });
         }
         const newUser = new User({
@@ -81,14 +83,24 @@ app.post('/signup', async (req, res) => {
     }
 });
 
-app.get('/secret', ensureLoggedIn('/'), (req, res) => {
-    res.send('Congrats! You are logged in');
-});
-
-app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }),
-    (req, res) => {
-        //res.redirect('/home');
-        console.log("Login")
+app.post('/login',
+    async (req, res) => {
+        try {
+            const validate = await User.findOne({ username: req.body.username, password: req.body.password });
+            if (validate) {
+                //console.log("validated login")
+                return res.status(200).json({
+                    success: validate,
+                });
+            }
+            else {
+                res.status(401).json({ error: 'Invalid username or password' });
+            }
+        }
+        catch (err) {
+            console.error(err);
+            res.status(500).json({ error: 'Internal server error' });
+        }
     }
 );
 

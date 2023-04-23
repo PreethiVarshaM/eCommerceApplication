@@ -7,8 +7,8 @@
 - [ ] Dummy interface to pay for items
 - [ ] Dummy bank with customer accounts and amount that can be modified
 - [ ] Exception handling when amount balance is less
-- [ ] Register seller
-- [ ] Register customer
+- [x] Register seller
+- [x] Register customer
 - [ ] One customer may have account in 2 or 3 banks
 - [ ] Payment to show bank selection interface
 - [ ] Item delivery tracking
@@ -23,13 +23,16 @@
 - [ ] Seller dashboard to indicate items sold, items returned and track each item
 - [ ] Customer to track returned item
 - [ ] If seller accepts return, amount should be credited back to the customer
-- [ ] If seller rejects return, customer can file grievance in the platform - [ ] specific details and history should be attached automatically
-- [ ] Advertisement interface - [ ] register advertisers
+- [ ] If seller rejects return, customer can file grievance in the platform
+- [ ] specific details and history should be attached automatically
+- [ ] Advertisement interface
+- [ ] register advertisers
 - [ ] Add or modify or delete discount coupons by the advertisers
 - [ ] Discounted amount to be withdrawn from the bank of the advertiser and credited to the seller
 - [ ] Platform should have a bank account and enjoy commission on each transaction
 - [ ] Each seller to have an inventory of different types of items of different quantities that change dynamically as purchase happens
-- [ ] Show advertisers in the customer search interface for the items - [ ] show relevant items
+- [ ] Show advertisers in the customer search interface for the items
+- [ ] show relevant items
 - [ ] Identify and use ER diagrams
 - [ ] Identify and use relational schema and normalization
 - [ ] Provide more exciting and competitively impressive features
