@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 import 'react-toastify/dist/ReactToastify.css';
 
 import axios from 'axios';
@@ -10,7 +11,7 @@ function Cart() {
     const [cartItems, setCartItems] = useState([]);
     const [product, setProduct] = useState([]);
     const [totalCost, setTotalCost] = useState(0);
-
+    const navigate = useNavigate();
 
     const location = useLocation();
     const userId = location.pathname.split('/')[2];
@@ -19,7 +20,8 @@ function Cart() {
         const fetchCartItems = async () => {
             const response = await axios.post(`http://localhost:5000/getcart`, { customerId: userId });
             setCartItems(response.data.items);
-            console.log(response.data.items)
+
+            //console.log(response.data.items)
 
             const fetchProduct = async () => {
 
@@ -58,9 +60,12 @@ function Cart() {
 
     const placeOrder = async () => {
         try {
-            const response = await axios.post('http://localhost:5000/placeorder', { cartItems, userId });
-            console.log(response.data);
+            const response = await axios.post('http://localhost:5000/placeorder', { cartItems, userId, totalCost });
+            console.log('place order', response.data);
             toast.success('Order placed successfully!');
+            alert('Order placed successfully!');
+            const url = "/customer/" + userId + "/orders"
+            navigate(url);
         } catch (error) {
             console.error(error);
             toast.error('Failed to place order. Please try again.');

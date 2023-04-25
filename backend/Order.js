@@ -37,7 +37,22 @@ const OrderSchema = new mongoose.Schema({
     created_at: {
         type: Date,
         default: Date.now
-    }
+    },
+    payment: {
+        type: Boolean,
+        default: false
+    },
+    location: {
+        type: String,
+        default: '0'
+    },
+    bank: {
+        type: String,
+        default: 'Bank1'
+    },
+
+
+
 });
 
 export default mongoose.model('Order', OrderSchema);

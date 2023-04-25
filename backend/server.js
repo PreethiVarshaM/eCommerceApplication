@@ -13,6 +13,9 @@ import Product from './Product.js';
 import Warehouse from './Warehouse.js';
 import Order from './Order.js';
 import Cart from './Cart.js';
+import BankAccount from './BankAccount.js';
+import SellerTransaction from './SellerTransaction.js';
+import AdminTransaction from './AdminTransaction.js';
 
 
 const app = express();
@@ -48,6 +51,56 @@ app.use(passport.session());
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+// ---- dummy bank accounts ----
+const admin = new User({
+    username: 'admin',
+    password: 'admin',
+    name: 'admin',
+    phone_number: '1234567890',
+    email: 'admin@mail.com',
+    address: {
+        dno: '1',
+        street: '1',
+        pinCode: '1',
+        city: '1',
+        State: '1',
+        Country: '1'
+    },
+    isSeller: false,
+    isAdmin: true,
+    isAdvertiser: false
+
+});
+admin.save();
+
+const bankAccounts = [
+    {
+        userId: '6443aa5c380c3bc1cd3c93fe',
+        bankId: '1',
+        bankName: 'Bank1',
+        accountId: '1',
+        accountBalance: 10000000
+    },
+    {
+        userId: '6447473ceb77d34063ce661a',
+        bankId: '1',
+        bankName: 'Bank1',
+        accountId: '2',
+        accountBalance: 100000,
+    },
+    {
+        userId: admin._id,
+        bankId: '1',
+        bankName: 'Bank1',
+        accountId: '3',
+        accountBalance: 100000,
+    }]
+
+bankAccounts.forEach((bankAccount) => {
+    const newBankAccount = new BankAccount(bankAccount);
+    newBankAccount.save();
+});
 
 // ------------------------------------------ Sign Up ------------------------------------------
 app.post('/signup', async (req, res) => {
@@ -273,13 +326,33 @@ app.post('/updatecart', async (req, res) => {
 //------------------------------ place order ------------------------------------
 app.post('/placeorder', async (req, res) => {
     try {
+        //console.log(req.body)
+        const cartItems = req.body.cartItems
+        const customerId = req.body.userId
+        const total = req.body.totalCost
+
+        const arr = []
+
+        for (let i = 0; i < cartItems.length; i++) {
+
+            //find product in product collection
+            const p = await Product.findById(cartItems[i].productId)
+            arr.push({
+                product: p._id,
+                quantity: cartItems[i].quantity,
+                price: p.cost,
+                discount: 0,
+            })
+
+        }
+
         // create new order
         const newOrder = new Order({
-            customerId: req.body.customerId,
-            items: req.body.items,
-            total: req.body.total,
-            status: req.body.status,
-            date: req.body.date
+            customer: customerId,
+            products: arr,
+            total: total,
+            status: 'Pending',
+            date: new Date(),
         });
         await newOrder.save();
         res.status(201).json(newOrder);
@@ -289,9 +362,9 @@ app.post('/placeorder', async (req, res) => {
 });
 
 //------------------------------ get all orders of user ------------------------------------
-app.post('/getorders', async (req, res) => {
+app.post('/getallorders', async (req, res) => {
     try {
-        const orders = await Order.find({ customerId: req.body.customerId });
+        const orders = await Order.find({ customer: req.body.customerId });
         if (orders) {
             res.status(200).json(orders);
         }
@@ -303,8 +376,106 @@ app.post('/getorders', async (req, res) => {
     }
 });
 
+// ------------------------------ update order payment ------------------------------------
+app.post('/updateorderpayment', async (req, res) => {
+    try {
+
+        console.log(req.body)
+        const bank = await BankAccount.findOne({ userId: req.body.customerId });
+
+        const order = await Order.findByIdAndUpdate(req.body.orderId, { $set: { paymentStatus: req.body.paymentStatus } }, { new: true });
+        if (bank.accountBalance >= order.total) {
+            await order.updateOne({ $set: { payment: true, status: 'Shipped' } });
+            await bank.updateOne({ $inc: { accountBalance: -order.total } });
+
+            //fetch bank account of seller and increment balance
+            for (let i = 0; i < order.products.length; i++) {
+                const prdt = await Product.findById(order.products[i].product);
+                const seller = await User.findById(prdt.sellerId);
+                const sellerBank = await BankAccount.findOne({ userId: seller._id });
+                await sellerBank.updateOne({ $inc: { accountBalance: 0.9 * order.products[i].price } });
+                const newTransaction = new SellerTransaction({
+                    sellerId: seller._id,
+                    orderId: order._id,
+                    productId: order.products[i].product,
+                    amount: order.products[i].price,
+                    customerId: req.body.customerId,
+                });
+                await newTransaction.save();
 
 
+
+            }
+            const newAdminTransaction = new AdminTransaction({
+                customerId: req.body.customerId,
+                orderId: order._id,
+                amount: order.total * 0.1,
+            });
+            await newAdminTransaction.save();
+
+            Cart.update({ customerId: req.body.customerId }, { $set: { items: [] } }, function (err, affected) {
+                console.log('affected: ', affected);
+            });
+            //console.log(await Order.findByIdAndUpdate(req.body.orderId, { $set: { paymentStatus: req.body.paymentStatus } }, { new: true }))
+            res.status(200).json(order);
+        }
+        else {
+            res.status(404).json({ message: 'Balance insufficient' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// ------------------------------ update order location ------------------------------------
+app.post('/updateorderlocation', async (req, res) => {
+    try {
+        const order = await Order.find({ _id: req.body.orderId });
+        if (order) {
+            const newOrder = await Order.findByIdAndUpdate(req.body.orderId, { $set: { location: req.body.location } }, { new: true });
+            res.status(200).json(newOrder);
+        }
+        else {
+            res.status(404).json({ message: 'Order not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// ------------------------------ get admin transaction ------------------------------------
+app.post('/getadmintransaction', async (req, res) => {
+    try {
+        const transactions = await AdminTransaction.find();
+        if (transactions) {
+            res.status(200).json(transactions);
+        }
+        else {
+            res.status(404).json({ message: 'Admin Transactions not found' });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ------------------------------ get seller transaction ------------------------------------
+app.post('/getsellertransaction', async (req, res) => {
+    try {
+        const transactions = await SellerTransaction.find({ sellerId: req.body.sellerId });
+
+        if (transactions) {
+            res.status(200).json(transactions);
+        }
+        else {
+            res.status(404).json({ message: 'Seller Transactions not found' });
+        }
+
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
