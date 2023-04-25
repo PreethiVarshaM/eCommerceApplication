@@ -20,7 +20,6 @@ const productSchema = new mongoose.Schema({
     advertiserId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Advertiser',
-        required: true
     },
     sellerId: {
         type: mongoose.Schema.Types.ObjectId,

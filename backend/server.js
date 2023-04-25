@@ -116,7 +116,12 @@ app.post('/login',
     }
 );
 
+// ------------------------------------------ Product transactions ------------------------------------------
+
+// ------------------------------------------ Add Product ------------------------------------------
+
 app.post('/addProduct', async (req, res) => {
+
     try {
         // Check if the product already exists in the database
         const existingProduct = await Product.findOne({ name: req.body.name });
@@ -124,10 +129,19 @@ app.post('/addProduct', async (req, res) => {
             return res.status(400).json({ message: 'Product already exists' });
         }
 
-        // Create a new product with data from the request body
-        const newProduct = new Product(req.body);
 
+        // Create a new product with data from the request body
+        const newProduct = new Product({
+            name: req.body.name,
+            quantity: req.body.quantity,
+            cost: req.body.cost,
+            discount: req.body.discount,
+            advertiserId: req.body.sellerId,
+            sellerId: req.body.sellerId,
+            warehouse: Math.floor(Math.random() * 4) + 1,
+        });
         // Save the new product to the database
+
         await newProduct.save();
 
         // Return a success message with the new product data
@@ -158,40 +172,50 @@ app.get('/getallproducts', async (req, res) => {
     }
 });
 
+//------------------------------ get Product details ------------------------------------
+app.post('/getproduct', async (req, res) => {
+
+    //console.log(req.body.productId)
+    try {
+        const product = await Product.findById(req.body.productId);
+        res.json(product);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error retrieving product details');
+    }
+});
 
 //------------------------------ add to cart ------------------------------------
 
 app.post('/addtocart', async (req, res) => {
+    try {
 
-    // check if product already exists in cart
-    const C = await Cart.findOne({ customerId: req.body.customerId });
-
-    if (C != null) {
-        for (var i = 0; i < C.items.length; i++) {
-            if (C.items[i].productId == req.body.productId) {
-                return res.status(400).json({ message: 'Product already exists in cart' });
-            }
+        //console.log(req.body.pid)
+        const cart = await Cart.findOne({ customerId: req.body.customerId });
+        //console.log(cart)
+        if (!cart) {
+            console.log('new cart')
+            const newCart = new Cart({ customerId: req.body.customerId, items: [{ productId: req.body.pid._id, quantity: 1 }] });
+            await newCart.save();
+            return res.status(201).send({ message: 'Product added to cart' });
         }
-    }
-    console.log(req.body)
 
-    // push new product to cart with customerId = req.body.customerId
-    const Prdt = await Cart.findOneAndUpdate({ customerId: req.body.customerId }, { $push: { items: { productId: req.body.pid._id, quantity: req.body.quantity } } }, { new: true });
+        //console.log('existing cart')
+        const existingItem = cart.items.find((item) => item.productId.toString() === req.body.pid._id.toString());
 
-    if (!Prdt) {
-        // create new cart if not exists
-        const newCart = new Cart({
-            customerId: req.body.customerId,
-            items: [{ productId: req.body.productId, quantity: req.body.quantity }]
-        });
-        await newCart.save();
+        //console.log('x', existingItem)
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.items.push({ productId: req.body.pid._id, quantity: 1 });
+        }
+        //console.log('y')
+        await cart.save();
+
+        res.send({ message: 'Product added to cart' });
+    } catch (error) {
+        res.status(500).send({ error: 'Internal server error' });
     }
-    console.log("3")
-    // Return a success message with the new product data
-    res.status(201).json({
-        message: 'Product added to cart successfully!',
-        product: Prdt,
-    });
 
 
 })
@@ -199,6 +223,7 @@ app.post('/addtocart', async (req, res) => {
 //------------------------------ get cart ------------------------------------
 app.post('/getcart', async (req, res) => {
     try {
+        //console.log(req.body)
         const cart = await Cart.findOne({ customerId: req.body.customerId });
         if (cart) {
             res.status(200).json(cart);
@@ -232,6 +257,7 @@ app.post('/deletefromcart', async (req, res) => {
 app.post('/updatecart', async (req, res) => {
     try {
         // update quantity of product in cart using prdtid and custid and quantity
+        console.log(req.body)
         const cart = await cart.findOneAndUpdate({ customerId: req.body.customerId, "items.productId": req.body.productId }, { $set: { "items.$.quantity": req.body.quantity } }, { new: true });
         if (cart) {
             res.status(200).json(cart);

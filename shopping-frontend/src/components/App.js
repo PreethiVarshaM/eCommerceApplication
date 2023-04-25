@@ -10,6 +10,8 @@ import SelHome from './Seller/SelHome/SelHome';
 import AdvHome from './Advertiser/AdvHome/AdvHome';
 import Cart from './Customer/Cart/Cart';
 import Orders from './Customer/Orders/Orders';
+import AddProductForm from "./Seller/AddProductForm/AddProductForm";
+import SellDashboard from "./Seller/SellDashboard/SellDashboard";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         </>
         <>
           <Route exact path="/seller/:username/home" element={<SelHome />} />
+          <Route exact path="/seller/:username/AddProduct" element={<AddProductForm />} />
+          <Route exact path="/seller/:username/dashboard" element={<SellDashboard />} />
 
         </>
         <>

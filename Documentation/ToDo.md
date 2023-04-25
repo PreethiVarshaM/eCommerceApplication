@@ -26,14 +26,14 @@
 - [ ] If seller rejects return, customer can file grievance in the platform
 - [ ] specific details and history should be attached automatically
 - [ ] Advertisement interface
-- [ ] register advertisers
+- [x] register advertisers
 - [ ] Add or modify or delete discount coupons by the advertisers
 - [ ] Discounted amount to be withdrawn from the bank of the advertiser and credited to the seller
 - [ ] Platform should have a bank account and enjoy commission on each transaction
 - [ ] Each seller to have an inventory of different types of items of different quantities that change dynamically as purchase happens
 - [ ] Show advertisers in the customer search interface for the items
 - [ ] show relevant items
-- [ ] Identify and use ER diagrams
-- [ ] Identify and use relational schema and normalization
-- [ ] Provide more exciting and competitively impressive features
-- [ ] Provide test cases and thoroughly test your platform
+- [x] Identify and use ER diagrams
+- [x] Identify and use relational schema and normalization
+- [x] Provide more exciting and competitively impressive features
+- [x] Provide test cases and thoroughly test your platform

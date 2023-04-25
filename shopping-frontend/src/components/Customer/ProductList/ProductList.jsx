@@ -25,15 +25,15 @@ function ProductCard({ product, userid }) {
 
     return (
         <Card className="product-card">
-            <Card.Img variant="top" src={product.image} />
+            <Card.Img variant="top" src={'https://picsum.photos/200'} />
             <Card.Body>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Text>
                     <p>Product ID: {product.id}</p>
-                    <p>Seller: {product.seller}</p>
+                    <p>Seller: {product.sellerId}</p>
                     <p>Warehouse: {product.warehouse}</p>
                     <p>Cost: {product.cost}</p>
-                    <p>Available: {product.available}</p>
+                    <p>Available: {product.quantity}</p>
                 </Card.Text>
                 <Button variant="primary" onClick={handleAddToCart}>Add to cart</Button>
 
@@ -51,7 +51,8 @@ function ProductList(userid) {
         const getProducts = async () => {
             try {
                 const response = await axios.get('http://localhost:5000/getallproducts');
-                setProducts(response.data);
+
+                setProducts(response.data.products);
             } catch (error) {
                 console.error(error);
             }
