@@ -16,6 +16,7 @@ import Cart from './Cart.js';
 import BankAccount from './BankAccount.js';
 import SellerTransaction from './SellerTransaction.js';
 import AdminTransaction from './AdminTransaction.js';
+import DiscountCoupon from './DiscountCoupon.js';
 
 
 const app = express();
@@ -94,6 +95,12 @@ const bankAccounts = [
         bankId: '1',
         bankName: 'Bank1',
         accountId: '3',
+        accountBalance: 1000000,
+    }, {
+        userId: '6447f2479f51192f91dd89a5',
+        bankId: '1',
+        bankName: 'Bank1',
+        accountId: '4',
         accountBalance: 100000,
     }]
 
@@ -462,7 +469,8 @@ app.post('/getadmintransaction', async (req, res) => {
 // ------------------------------ get seller transaction ------------------------------------
 app.post('/getsellertransaction', async (req, res) => {
     try {
-        const transactions = await SellerTransaction.find({ sellerId: req.body.sellerId });
+        //console.log(req.body)
+        const transactions = await SellerTransaction.find({ sellerId: req.body.sellerID });
 
         if (transactions) {
             res.status(200).json(transactions);
@@ -476,6 +484,45 @@ app.post('/getsellertransaction', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+//------------------------------ create coupon ------------------------------------
+app.post('/createcoupon', async (req, res) => {
+    try {
+        const bank = await BankAccount.findOne({ userId: req.body.advertiserId });
+
+        const coupon = new DiscountCoupon({
+            advertiserId: req.body.advertiserId,
+            couponCode: req.body.couponCode,
+            discountPercentage: parseInt(req.body.discountPercent),
+            advertiserAccount: bank.accountId,
+        });
+
+        await coupon.save();
+
+        res.status(201).send(coupon);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error creating coupon');
+    }
+});
+
+//------------------------------ get all coupons ------------------------------------
+app.get('/getallcoupons', async (req, res) => {
+    try {
+        const coupons = await DiscountCoupon.find();
+        if (coupons) {
+            res.status(200).json(coupons);
+        }
+        else {
+            res.status(404).json({ message: 'Coupons not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//------------------------------END ---------------------------
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

@@ -1,26 +1,26 @@
 # **DBMS Transactions:**  
 
-- [ ] Seller should add, modify or delete item types and quantity
-- [ ] Each customer search for items
-- [ ] Each customer add items to his/her cart
-- [ ] Each customer modifies his/her cart
-- [ ] Dummy interface to pay for items
-- [ ] Dummy bank with customer accounts and amount that can be modified
-- [ ] Exception handling when amount balance is less
+- [x] Seller should add, modify or delete item types and quantity
+- [x] Each customer search for items
+- [x] Each customer add items to his/her cart
+- [x] Each customer modifies his/her cart
+- [x] Dummy interface to pay for items
+- [x] Dummy bank with customer accounts and amount that can be modified
+- [x] Exception handling when amount balance is less
 - [x] Register seller
 - [x] Register customer
-- [ ] One customer may have account in 2 or 3 banks
-- [ ] Payment to show bank selection interface
+- [x] One customer may have account in 2 or 3 banks
+- [x] Payment to show bank selection interface
 - [ ] Item delivery tracking
 - [ ] Add or modify multiple warehouses
-- [ ] For each selected item, randomly choose warehouse path
+- [x] For each selected item, randomly choose warehouse path
 - [ ] Item arrives at a warehouse
 - [ ] Item dispatches from a warehouse
 - [ ] Upon final arrival, OTP code should be entered by the customer in the web interface (customer log[in] to receive item
 - [ ] Item return workflow to be provide
 - [ ] Randomly choose warehouse path for returning items
 - [ ] Returned item arrives at the seller
-- [ ] Seller dashboard to indicate items sold, items returned and track each item
+- [x] Seller dashboard to indicate items sold, items returned and track each item
 - [ ] Customer to track returned item
 - [ ] If seller accepts return, amount should be credited back to the customer
 - [ ] If seller rejects return, customer can file grievance in the platform
@@ -29,10 +29,10 @@
 - [x] register advertisers
 - [ ] Add or modify or delete discount coupons by the advertisers
 - [ ] Discounted amount to be withdrawn from the bank of the advertiser and credited to the seller
-- [ ] Platform should have a bank account and enjoy commission on each transaction
-- [ ] Each seller to have an inventory of different types of items of different quantities that change dynamically as purchase happens
+- [x] Platform should have a bank account and enjoy commission on each transaction
+- [x] Each seller to have an inventory of different types of items of different quantities that change dynamically as purchase happens
 - [ ] Show advertisers in the customer search interface for the items
-- [ ] show relevant items
+- [x] show relevant items
 - [x] Identify and use ER diagrams
 - [x] Identify and use relational schema and normalization
 - [x] Provide more exciting and competitively impressive features

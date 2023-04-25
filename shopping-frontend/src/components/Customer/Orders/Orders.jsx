@@ -6,6 +6,7 @@ function Orders() {
     const [orders, setOrders] = useState([]);
     const [bankAccountNumber, setBankAccountNumber] = useState('1');
     const [bankName, setBankName] = useState('Bank1');
+    const [coupon, setCoupon] = useState('---');
 
     const location = useLocation();
     useEffect(() => {
@@ -55,7 +56,11 @@ function Orders() {
                             <p className="card-text">Paid</p>
                         ) : (
                             <div>
+                                <p >Coupon Code</p>
+                                <input type="text" placeholder="coupon code" value={coupon} onChange={(e) => setCoupon(e.target.value)} />
+                                <p >Bank Account Number</p>
                                 <input type="text" placeholder="Bank account number" value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)} />
+                                <p >Bank Name</p>
                                 <input type="text" placeholder="Bank name" value={bankName} onChange={(e) => setBankName(e.target.value)} />
                                 <button className="btn btn-primary" onClick={() => handlePayment(order._id, bankAccountNumber, bankName)}>
                                     Pay

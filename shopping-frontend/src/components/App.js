@@ -12,7 +12,7 @@ import Cart from './Customer/Cart/Cart';
 import Orders from './Customer/Orders/Orders';
 import AddProductForm from "./Seller/AddProductForm/AddProductForm";
 import SellDashboard from "./Seller/SellDashboard/SellDashboard";
-
+import CreateCoupons from "./Advertiser/CreateCoupons/CreateCoupons";
 
 function App() {
   return (
@@ -36,6 +36,7 @@ function App() {
         </>
         <>
           <Route exact path="/advertiser/:username/home" element={<AdvHome />} />
+          <Route exact path="/advertiser/:username/createcoupons" element={<CreateCoupons />} />
         </>
       </Routes>
     </Router>

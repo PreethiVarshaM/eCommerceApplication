@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import CustNav from '../Nav/CustNav';
 import ProductList from '../ProductList/ProductList';
 import './Home.css';
+import Coupons from '../Coupons/Coupons';
 
 function Home() {
     const location = useLocation();
@@ -11,6 +12,8 @@ function Home() {
     return (
         <div>
             <CustNav userid={userid} />
+            <Coupons />
+            <h2>Product List</h2>
             <ProductList userid={userid} />
         </div>
     );
