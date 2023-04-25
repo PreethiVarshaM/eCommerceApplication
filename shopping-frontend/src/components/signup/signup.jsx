@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from 'axios';
 import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 import "./signup.css";
 
 const SignUp = () => {
@@ -26,6 +26,9 @@ const SignUp = () => {
         isAdvertiser: false,
 
     });
+
+
+    const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -51,8 +54,18 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            if (formData.isSeller === "on") {
+                formData.isSeller = true;
+            }
+            if (formData.isAdmin === "on") {
+                formData.isAdmin = true;
+            }
+            if (formData.isAdvertiser === "on") {
+                formData.isAdvertiser = true;
+            }
             const response = await axios.post('http://localhost:5000/signup', formData);
-            console.log(await response.json());
+            //console.log(await response.json());
+            navigate('/')
         } catch (err) {
             console.error(err);
         }

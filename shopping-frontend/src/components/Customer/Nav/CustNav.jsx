@@ -1,6 +1,8 @@
 import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import './CustNav.css'
-function CustNav() {
+function CustNav(userid) {
+    //console.log(userid.userid);
     return (
         <Navbar bg="light" expand="lg">
             <Navbar.Brand href="#home">Ecommerce App</Navbar.Brand>
@@ -13,8 +15,8 @@ function CustNav() {
                     </Form>
                 </Nav>
                 <Nav className="ml-auto">
-                    <Nav.Link href="www.google.com">Cart</Nav.Link>
-                    <Nav.Link href="www.google.com">Dashboard</Nav.Link>
+                    <Link to={'/customer/' + userid.userid + '/cart'}>Cart</Link>
+                    <Link to={'/customer/' + userid.userid + 'orders'}>Dashboard</Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

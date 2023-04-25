@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
 
-const OrderSchema = new Schema({
+const OrderSchema = new mongoose.Schema({
     customer: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Customer',
         required: true
     },
     products: [{
         product: {
-            type: Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Product',
             required: true
         },

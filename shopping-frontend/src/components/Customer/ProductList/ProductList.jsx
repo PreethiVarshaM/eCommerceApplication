@@ -1,38 +1,28 @@
 import React from 'react';
 import { Card, Button, Col, Row } from 'react-bootstrap';
+import { useState } from 'react';
+import axios from 'axios';
 import './ProductList.css';
 
-const products = [
-    {
-        id: 1,
-        name: 'Product 1',
-        seller: 'Seller 1',
-        warehouse: 'Warehouse 1',
-        image: 'https://picsum.photos/200/300',
-        cost: '$10',
-        available: 5,
-    },
-    {
-        id: 2,
-        name: 'Product 2',
-        seller: 'Seller 2',
-        warehouse: 'Warehouse 2',
-        image: 'https://picsum.photos/200/300',
-        cost: '$20',
-        available: 8,
-    },
-    {
-        id: 3,
-        name: 'Product 3',
-        seller: 'Seller 3',
-        warehouse: 'Warehouse 3',
-        image: 'https://picsum.photos/200/300',
-        cost: '$30',
-        available: 10,
-    },
-];
 
-function ProductCard({ product }) {
+function ProductCard({ product, userid }) {
+
+    const [pid, setpid] = useState(product);
+    const [uid, setuid] = useState(userid);
+
+    const handleAddToCart = async (productId) => {
+        try {
+            const customerId = uid.userid;
+            const response = await axios.post('http://localhost:5000/addtocart', { pid, customerId, quantity: 1 });
+            console.log(await response.data);
+            alert(`Added ${product.name} to cart!`);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
     return (
         <Card className="product-card">
             <Card.Img variant="top" src={product.image} />
@@ -45,18 +35,35 @@ function ProductCard({ product }) {
                     <p>Cost: {product.cost}</p>
                     <p>Available: {product.available}</p>
                 </Card.Text>
-                <Button variant="primary">Add to cart</Button>
+                <Button variant="primary" onClick={handleAddToCart}>Add to cart</Button>
+
             </Card.Body>
-        </Card>
+        </Card >
     );
+
 }
 
-function ProductList() {
+function ProductList(userid) {
+
+    const [products, setProducts] = useState([]);
+    //get products from backend
+    React.useEffect(() => {
+        const getProducts = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/getallproducts');
+                setProducts(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        getProducts();
+    }, []);
+
     return (
         <Row>
             {products.map((product) => (
                 <Col key={product.id} lg={4} md={6} sm={12}>
-                    <ProductCard product={product} />
+                    <ProductCard product={product} userid={userid} />
                 </Col>
             ))}
         </Row>

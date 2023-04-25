@@ -8,6 +8,8 @@ import SignUp from './signup/signup';
 import AdHome from './Admin/AdHome/AdHome';
 import SelHome from './Seller/SelHome/SelHome';
 import AdvHome from './Advertiser/AdvHome/AdvHome';
+import Cart from './Customer/Cart/Cart';
+import Orders from './Customer/Orders/Orders';
 
 function App() {
   return (
@@ -17,9 +19,12 @@ function App() {
         <Route exact path="/signup" element={<SignUp />} />
         <>
           <Route exact path="/customer/:username/home" element={<Home />} />
+          <Route exact path="/customer/:username/cart" element={<Cart />} />
+          <Route exact path="/customer/:username/orders" element={<Orders />} />
         </>
         <>
           <Route exact path="/seller/:username/home" element={<SelHome />} />
+
         </>
         <>
           <Route exact path="/admin/:username/home" element={<AdHome />} />

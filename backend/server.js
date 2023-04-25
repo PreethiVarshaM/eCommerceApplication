@@ -12,6 +12,7 @@ import User from './User.js';
 import Product from './Product.js';
 import Warehouse from './Warehouse.js';
 import Order from './Order.js';
+import Cart from './Cart.js';
 
 
 const app = express();
@@ -78,6 +79,12 @@ app.post('/signup', async (req, res) => {
 
         });
 
+        //create cart for user
+        const newCart = new Cart({
+            customerId: newUser._id,
+            items: []
+        });
+        await newCart.save();
         await newUser.save();
         console.log("newuser")
         res.status(201).json(newUser);
@@ -130,6 +137,142 @@ app.post('/addProduct', async (req, res) => {
         });
     } catch (error) {
         // Return an error message if there was a problem saving the product
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// ------------------------------------------ Get All Products ------------------------------------------
+app.get('/getallproducts', async (req, res) => {
+    try {
+        // Get all products from the database
+        const products = await Product.find();
+
+        // Return the products list with a success message
+        res.status(200).json({
+            message: 'Products retrieved successfully',
+            products: products,
+        });
+    } catch (error) {
+        // Return an error message if there was a problem retrieving the products
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+//------------------------------ add to cart ------------------------------------
+
+app.post('/addtocart', async (req, res) => {
+
+    // check if product already exists in cart
+    const C = await Cart.findOne({ customerId: req.body.customerId });
+
+    if (C != null) {
+        for (var i = 0; i < C.items.length; i++) {
+            if (C.items[i].productId == req.body.productId) {
+                return res.status(400).json({ message: 'Product already exists in cart' });
+            }
+        }
+    }
+    console.log(req.body)
+
+    // push new product to cart with customerId = req.body.customerId
+    const Prdt = await Cart.findOneAndUpdate({ customerId: req.body.customerId }, { $push: { items: { productId: req.body.pid._id, quantity: req.body.quantity } } }, { new: true });
+
+    if (!Prdt) {
+        // create new cart if not exists
+        const newCart = new Cart({
+            customerId: req.body.customerId,
+            items: [{ productId: req.body.productId, quantity: req.body.quantity }]
+        });
+        await newCart.save();
+    }
+    console.log("3")
+    // Return a success message with the new product data
+    res.status(201).json({
+        message: 'Product added to cart successfully!',
+        product: Prdt,
+    });
+
+
+})
+
+//------------------------------ get cart ------------------------------------
+app.post('/getcart', async (req, res) => {
+    try {
+        const cart = await Cart.findOne({ customerId: req.body.customerId });
+        if (cart) {
+            res.status(200).json(cart);
+        }
+        else {
+            res.status(404).json({ message: 'Cart not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//------------------------------ delete from cart ------------------------------------
+app.post('/deletefromcart', async (req, res) => {
+    try {
+
+        const cart = await Cart.findOne({ customerId: req.body.customerId });
+        if (cart) {
+            const newCart = await Cart.findOneAndUpdate({ customerId: req.body.customerId }, { $pull: { items: { productId: req.body.productId } } }, { new: true });
+            res.status(200).json(newCart);
+        }
+        else {
+            res.status(404).json({ message: 'Cart not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//------------------------------ update cart ------------------------------------
+app.post('/updatecart', async (req, res) => {
+    try {
+        // update quantity of product in cart using prdtid and custid and quantity
+        const cart = await cart.findOneAndUpdate({ customerId: req.body.customerId, "items.productId": req.body.productId }, { $set: { "items.$.quantity": req.body.quantity } }, { new: true });
+        if (cart) {
+            res.status(200).json(cart);
+        }
+        else {
+            res.status(404).json({ message: 'Cart not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//------------------------------ place order ------------------------------------
+app.post('/placeorder', async (req, res) => {
+    try {
+        // create new order
+        const newOrder = new Order({
+            customerId: req.body.customerId,
+            items: req.body.items,
+            total: req.body.total,
+            status: req.body.status,
+            date: req.body.date
+        });
+        await newOrder.save();
+        res.status(201).json(newOrder);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+//------------------------------ get all orders of user ------------------------------------
+app.post('/getorders', async (req, res) => {
+    try {
+        const orders = await Order.find({ customerId: req.body.customerId });
+        if (orders) {
+            res.status(200).json(orders);
+        }
+        else {
+            res.status(404).json({ message: 'Orders not found' });
+        }
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
