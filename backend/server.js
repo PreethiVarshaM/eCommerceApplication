@@ -9,6 +9,10 @@ import { ensureLoggedIn } from 'connect-ensure-login';
 import cors from 'cors';
 
 import User from './User.js';
+import Product from './Product.js';
+import Warehouse from './Warehouse.js';
+import Order from './Order.js';
+
 
 const app = express();
 
@@ -44,7 +48,7 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// TODO: Create a route for these
+// ------------------------------------------ Sign Up ------------------------------------------
 app.post('/signup', async (req, res) => {
     //console.log("signup")
     try {
@@ -83,6 +87,7 @@ app.post('/signup', async (req, res) => {
     }
 });
 
+// ------------------------------------------ Login ------------------------------------------
 app.post('/login',
     async (req, res) => {
         try {
@@ -103,6 +108,34 @@ app.post('/login',
         }
     }
 );
+
+app.post('/addProduct', async (req, res) => {
+    try {
+        // Check if the product already exists in the database
+        const existingProduct = await Product.findOne({ name: req.body.name });
+        if (existingProduct) {
+            return res.status(400).json({ message: 'Product already exists' });
+        }
+
+        // Create a new product with data from the request body
+        const newProduct = new Product(req.body);
+
+        // Save the new product to the database
+        await newProduct.save();
+
+        // Return a success message with the new product data
+        res.status(201).json({
+            message: 'Product added successfully!',
+            product: newProduct,
+        });
+    } catch (error) {
+        // Return an error message if there was a problem saving the product
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

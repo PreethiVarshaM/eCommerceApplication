@@ -37,8 +37,23 @@ function Login() {
             const response = axios.post('http://localhost:5000/login', { username, password, userType });
             console.log((await response).data.success._id);
             // <Navigate to="/home" />
-            const url = "/customer/" + (await response).data.success._id + "/home"
-            navigate(url);
+            if (userType === "Customer") {
+                const url = "/customer/" + (await response).data.success._id + "/home"
+                navigate(url);
+            }
+            else if (userType === "Seller") {
+                const url = "/seller/" + (await response).data.success._id + "/home"
+                navigate(url);
+            }
+            else if (userType === "Admin") {
+                const url = "/admin/" + (await response).data.success._id + "/home"
+                navigate(url);
+            }
+            else if (userType === "Advertiser") {
+                const url = "/advertiser/" + (await response).data.success._id + "/home"
+                navigate(url);
+            }
+
             // Add logic to redirect user to Home page upon successful login
         } catch (error) {
             console.error(error);

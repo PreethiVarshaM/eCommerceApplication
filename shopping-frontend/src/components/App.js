@@ -5,6 +5,9 @@ import './App.css';
 import Home from './Customer/CustHome/Home';
 import Login from './login/login.jsx';
 import SignUp from './signup/signup';
+import AdHome from './Admin/AdHome/AdHome';
+import SelHome from './Seller/SelHome/SelHome';
+import AdvHome from './Advertiser/AdvHome/AdvHome';
 
 function App() {
   return (
@@ -16,10 +19,13 @@ function App() {
           <Route exact path="/customer/:username/home" element={<Home />} />
         </>
         <>
-          <Route exact path="/seller/:username/home" element={<Home />} />
+          <Route exact path="/seller/:username/home" element={<SelHome />} />
         </>
         <>
-          <Route exact path="/admin/:username/home" element={<Home />} />
+          <Route exact path="/admin/:username/home" element={<AdHome />} />
+        </>
+        <>
+          <Route exact path="/advertiser/:username/home" element={<AdvHome />} />
         </>
       </Routes>
     </Router>
