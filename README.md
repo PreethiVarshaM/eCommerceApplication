@@ -18,16 +18,13 @@ An online marketplace is a website or application that allows users to buy and s
 * [ER Diagram]()
 * [Relational Schema]()
 * [Technologies Used]()
-* [Prerequisites]()
 * [Installation and Setup]()
-* [Testing]()
-* [Authors]()
-* [License]()
+
 
 
 ## **Features**
 
-The following features have been implemented in the Online Marketplace application:
+The following features have been implemented in the eCommerce Application:
 
 
 
@@ -67,13 +64,13 @@ The following features are under development:
 
 ## **Relational Schema**
 
-The Relational Schema for the Online Marketplace application is as follows:
+The Relational Schema for the eCommerce Application is as follows:
 
 
 
 ## **Technologies Used**
 
-The following technologies were used to implement the Online Marketplace application:
+The following technologies were used to implement the eCommerce Application:
 
 
 
@@ -82,3 +79,19 @@ The following technologies were used to implement the Online Marketplace applica
 * React.js
 * Node.js
 * Mongoose
+
+## **Installation and setup**
+
+Ensure nodejs and mongodb are installed in the system.
+
+* git clone the reporsitory
+* Open two terminal with the parent directory
+* ### In 1st terminal 
+* * ``` cd backend ```
+* * Then type ``` npm i ``` to install the dependencies
+* * Then type ``` node server.js ``` to run the server
+* ### In the 2nd terminal
+* * ``` cd shoppingfrontend ```
+* * ``` npm i ```
+* * Then type ``` npm start ``` to start the react application
+
