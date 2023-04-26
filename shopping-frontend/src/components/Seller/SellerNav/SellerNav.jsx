@@ -11,6 +11,7 @@ function SellerNavbar(userid) {
                 <Nav className="mr-auto">
                     <Link to={'/seller/' + userid.userid + '/AddProduct'}>Add New Product</Link>
                     <Link to={'/seller/' + userid.userid + '/dashboard'}>Dashboard</Link>
+                    <Link to={'/' + userid.userid + '/bank_account'}>Add bank Account</Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

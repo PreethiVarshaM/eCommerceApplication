@@ -13,6 +13,7 @@ import Orders from './Customer/Orders/Orders';
 import AddProductForm from "./Seller/AddProductForm/AddProductForm";
 import SellDashboard from "./Seller/SellDashboard/SellDashboard";
 import CreateCoupons from "./Advertiser/CreateCoupons/CreateCoupons";
+import AddBankAccount from "./AddBankAccount/AddBankAccount";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<Login />} />
         <Route exact path="/signup" element={<SignUp />} />
+        <Route exact path="/:username/bank_account" element={<AddBankAccount />} />
         <>
           <Route exact path="/customer/:username/home" element={<Home />} />
           <Route exact path="/customer/:username/cart" element={<Cart />} />

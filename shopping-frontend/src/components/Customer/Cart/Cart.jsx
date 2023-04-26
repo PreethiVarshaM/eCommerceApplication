@@ -21,14 +21,14 @@ function Cart() {
             const response = await axios.post(`http://localhost:5000/getcart`, { customerId: userId });
             setCartItems(response.data.items);
 
-            //console.log(response.data.items)
+            console.log(response.data.items)
 
             const fetchProduct = async () => {
 
                 const arr = []
                 let sum = 0
                 for (let i = 0; i < cartItems.length; i++) {
-                    //console.log(cartItems[i].productId)
+                    console.log(cartItems[i].productId)
                     const response = await axios.post('http://localhost:5000/getproduct', { productId: cartItems[i].productId });
                     sum += response.data.cost;
                     arr.push(response.data)

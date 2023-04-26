@@ -333,6 +333,7 @@ app.post('/updatecart', async (req, res) => {
 //------------------------------ place order ------------------------------------
 app.post('/placeorder', async (req, res) => {
     try {
+
         //console.log(req.body)
         const cartItems = req.body.cartItems
         const customerId = req.body.userId
@@ -344,6 +345,15 @@ app.post('/placeorder', async (req, res) => {
 
             //find product in product collection
             const p = await Product.findById(cartItems[i].productId)
+            if (cartItems[i].quantity == '') cartItems[i].quantity = 1
+            if (cartItems[i].quantity > p.quantity) {
+                return res.status(400).json({ message: 'Quantity not available' })
+            }
+            if (p.quantity > 0) {
+                p.quantity = p.quantity - cartItems[i].quantity
+            }
+            await p.save()
+
             arr.push({
                 product: p._id,
                 quantity: cartItems[i].quantity,
@@ -362,6 +372,8 @@ app.post('/placeorder', async (req, res) => {
             date: new Date(),
         });
         await newOrder.save();
+
+        console.log(newOrder)
         res.status(201).json(newOrder);
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -520,7 +532,25 @@ app.get('/getallcoupons', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+//----------------------------- add new bank account ---------------------------------
+app.post('/addbankaccount', async (req, res) => {
+    try {
 
+        const bank = new BankAccount({
+            userId: req.body.userId,
+            bankId: req.body.bankId,
+            bankName: req.body.bankName,
+            accountId: req.body.accountId,
+            accountBalance: req.body.accountBalance,
+        }
+        );
+        await bank.save();
+        res.status(201).send(bank);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error creating bank account');
+    }
+});
 //------------------------------END ---------------------------
 
 

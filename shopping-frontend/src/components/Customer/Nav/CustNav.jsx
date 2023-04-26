@@ -17,6 +17,7 @@ function CustNav(userid) {
                 <Nav className="ml-auto">
                     <Link to={'/customer/' + userid.userid + '/cart'}>Cart</Link>
                     <Link to={'/customer/' + userid.userid + '/orders'}>Dashboard</Link>
+                    <Link to={'/' + userid.userid + '/bank_account'}>Add bank Account</Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

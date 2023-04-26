@@ -14,6 +14,7 @@ function AdvertiserNavbar() {
                 <ul className="navbar-nav ml-auto">
                     <li className="nav-item">
                         <Link className="nav-link" to={"/advertiser/" + username + "/createcoupons"}>Create New Coupon</Link>
+                        <Link to={'/' + username + '/bank_account'}>Add bank Account</Link>
                     </li>
                 </ul>
             </div>
