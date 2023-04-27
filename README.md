@@ -14,11 +14,11 @@ An online marketplace is a website or application that allows users to buy and s
 
 
 
-* [Features]()
-* [ER Diagram]()
-* [Relational Schema]()
-* [Technologies Used]()
-* [Installation and Setup]()
+* [Features](#features)
+* [ER Diagram](#er-diagram)
+* [Relational Schema](#relational-schema))
+* [Technologies Used](#technologies-used)
+* [Installation and Setup](#installation-and-setup)
 
 
 
